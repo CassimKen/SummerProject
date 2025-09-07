@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Coach Report</h2>
+{% for coach in coaches %}
+    <h4>{{ coach.name }}</h4>
+    {% set ratings = [] %}
+    {% for lesson in coach.lessons %}
+        {% for booking in lesson.bookings %}
+            {% if booking.rating %}
+                {% set _ = ratings.append(booking.rating) %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <p>Average Rating: 
+        {% if ratings|length > 0 %}
+            {{ (ratings | sum) / (ratings | length) | round(2) }}
+        {% else %}
+            No ratings yet.
+        {% endif %}
+    </p>
+    <hr>
+{% endfor %}
+{% endblock %}

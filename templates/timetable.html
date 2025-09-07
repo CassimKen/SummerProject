@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Timetable</h2>
+    
+    <p>Logged in as Learner ID: {{ learner_id }}</p>
+
+    <form method="get">
+        <label>Filter by Day:</label>
+        <input type="text" name="day">
+        <label>Grade:</label>
+        <input type="number" name="grade" min="0" max="5">
+        <label>Coach:</label>
+        <input type="text" name="coach">
+        <button type="submit" class="btn btn-sm btn-outline-primary">Filter</button>
+    </form>
+
+    <table class="table table-striped mt-3">
+        <tr>
+            <th>Day</th><th>Time</th><th>Grade</th><th>Coach</th><th>Vacancies</th><th>Action</th>
+        </tr>
+        {% for lesson in lessons %}
+        <tr>
+            <td>{{ lesson.day }}</td>
+            <td>{{ lesson.time }}</td>
+            <td>{{ lesson.grade }}</td>
+            <td>{{ lesson.coach.name }}</td>
+           <td>
+    {% if lesson.bookings|length < 4 %}
+        <a href="{{ url_for('book_lesson', learner_id=learner_id, lesson_id=lesson.id) }}" class="btn btn-sm btn-outline-success">Book</a>
+    {% else %}
+        <span class="text-danger">Full</span>
+    {% endif %}
+</td>
+
+            <td>
+                {% if lesson.bookings|length < 4 %}
+                    <a href="{{ url_for('book_lesson', learner_id=learner_id, lesson_id=lesson.id) }}" class="btn btn-sm btn-outline-success">Book</a>
+                {% else %}
+                    <span class="text-danger">Full</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+<script>
+function bookLesson(event, lessonId) {
+    event.preventDefault(); // stop the <a> from navigating
+
+    fetch(`/book/${lessonId}`, { method: 'POST' })
+    .then(response => response.json())
+    .then(data => {
+        const toast = document.getElementById('toast');
+        toast.textContent = data.message;
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    })
+    .catch(err => console.error(err));
+}
+</script>
+
+{% endblock %}

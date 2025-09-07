@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Learner Report</h2>
+{% for learner in learners %}
+    <h4>{{ learner.name }} (Grade {{ learner.grade }})</h4>
+    <ul>
+        <li><strong>Booked:</strong> {{ learner.bookings | selectattr("status", "equalto", "booked") | list | length }}</li>
+        <li><strong>Cancelled:</strong> {{ learner.bookings | selectattr("status", "equalto", "cancelled") | list | length }}</li>
+        <li><strong>Attended:</strong> {{ learner.bookings | selectattr("status", "equalto", "attended") | list | length }}</li>
+    </ul>
+    <hr>
+{% endfor %}
+{% endblock %}

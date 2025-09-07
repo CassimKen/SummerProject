@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Learners</h2>
+<table class="table">
+    <tr>
+        <th>Name</th><th>Age</th><th>Gender</th><th>Grade</th><th>Emergency Contact</th>
+    </tr>
+    {% for learner in learners %}
+    <tr>
+        <td>{{ learner.name }}</td>
+        <td>{{ learner.age }}</td>
+        <td>{{ learner.gender }}</td>
+        <td>{{ learner.grade }}</td>
+        <td>{{ learner.emergency_contact }}</td>
+        
+    <td>
+            <ul>
+                {% for booking in learner.bookings %}
+                <li>
+                    Lesson: {{ booking.lesson.day }} {{ booking.lesson.time }} (Grade {{ booking.lesson.grade }})
+                    <br>
+                    Status: {{ booking.status }}
+                    
+                    <!-- Attend button (only if not attended yet) -->
+                    {% if booking.status != 'attended' %}
+                        <a href="{{ url_for('attend_lesson', booking_id=booking.id) }}" class="btn btn-success btn-sm">
+                            Attend
+                        </a>
+                    {% endif %}
+
+                    <!-- Review button (only if already attended, and no review yet) -->
+                    {% if booking.status == 'attended' and not booking.review %}
+                        <a href="{{ url_for('review', booking_id=booking.id) }}" class="btn btn-primary btn-sm">
+                            Review
+                        </a>
+                    {% elif booking.review %}
+                        <p>Review: {{ booking.review }} (Rating: {{ booking.rating }})</p>
+                    {% endif %}
+                     {% if booking.status != 'attended' %}
+            <a href="{{ url_for('cancel_booking', booking_id=booking.id) }}" 
+               class="btn btn-danger btn-sm">Cancel</a>
+        {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
