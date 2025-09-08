@@ -26,7 +26,7 @@
             <td>{{ lesson.coach.name }}</td>
            <td>
     {% if lesson.bookings|length < 4 %}
-        <a href="{{ url_for('book_lesson', learner_id=learner_id, lesson_id=lesson.id) }}" class="btn btn-sm btn-outline-success">Book</a>
+        <a >{{4 - lesson.bookings|length}}</a>
     {% else %}
         <span class="text-danger">Full</span>
     {% endif %}

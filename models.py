@@ -15,7 +15,8 @@ class Learner(db.Model):
     emergency_contact = db.Column(db.String(20))
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    grade = db.Column(db.Integer) 
+    grade = db.Column(db.Integer)
+    role = db.Column(db.String(10), default='learner')  
     bookings = db.relationship('Booking', backref='learner', lazy=True)
     
 

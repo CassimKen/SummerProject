@@ -14,18 +14,27 @@ db.init_app(app)
 def index():
     return render_template('index.html')
 
-@app.route('/learners', methods=['GET', 'POST'])
+
+@app.route('/learners')
 def learners():
     learner_id = session.get('learner_id')
     if not learner_id:
         return redirect(url_for('login'))
-    
 
-    learners = Learner.query.all()
-    return render_template('learner.html', learners=learners)
+    user = Learner.query.get_or_404(learner_id)
+
+    if user.role == 'admin':
+        learners = Learner.query.all()
+    else:
+        learners = [user]
+
+    return render_template('learner.html', learners=learners, current_user=user)
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    message = None 
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -33,8 +42,11 @@ def login():
         if learner and learner.check_password(password):
             session['learner_id'] = learner.id
             return redirect(url_for('timetable'))
-        return "Invalid credentials."
-    return render_template('login.html')
+        else:
+            message = "Invalid username or password."
+    
+    return render_template('login.html', message=message)
+
 @app.route('/cancel/<int:booking_id>')
 def cancel_booking(booking_id):
     learner_id = session.get('learner_id')
@@ -44,10 +56,10 @@ def cancel_booking(booking_id):
     booking = Booking.query.get_or_404(booking_id)
 
     if booking.learner_id != learner_id:
-        return "You are not allowed to cancel this booking."
+        return render_template('noaccess.html')
 
     if booking.status == "attended":
-        return "You cannot cancel an attended lesson."
+        return render_template('cantcancel.html')
 
     booking.status = "cancelled"
     db.session.commit()
@@ -63,7 +75,11 @@ def register():
         emergency_contact = request.form['emergency_contact']
         email = request.form['email']
         password = request.form['password']
+        if age < 4 or age > 11:
+            return "Age must be between 4 and 11."
 
+        if grade < 0 or grade > 5:
+            return "Grade must be between 0 and 5."
         existing = Learner.query.filter_by(email=email).first()
         if existing:
             return "Email already registered."
@@ -167,13 +183,33 @@ def review(booking_id):
     learner_id = session.get('learner_id')
     if not learner_id:
         return redirect(url_for('login'))
+    
+
     booking = Booking.query.get(booking_id)
+    if not booking or booking.learner_id != learner_id:
+
+        return render_template('noaccess.html')
     if request.method == 'POST':
+        
         booking.review = request.form['review']
         booking.rating = int(request.form['rating'])
         db.session.commit()
         return redirect(url_for('learners'))
     return render_template('review.html', booking=booking)
+@app.route('/reviews')
+def reviews():
+    learner_id = session.get('learner_id')
+    if not learner_id:
+        return redirect(url_for('login'))
+
+    user = Learner.query.get_or_404(learner_id)
+
+    if user.role == 'admin':
+        bookings = Booking.query.filter(Booking.review != None).all()
+    else:
+        bookings = Booking.query.filter_by(learner_id=user.id).filter(Booking.review != None).all()
+
+    return render_template('reviews.html', bookings=bookings, current_user=user)
 
 @app.route('/reports/learners')
 def report_learners():

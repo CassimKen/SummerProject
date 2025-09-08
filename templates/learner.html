@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Learners</h2>
+{% if current_user.role == 'learner' %}
+    <h2>My Profile</h2>
+{% elif current_user.role == 'admin' %}
+    <h2>Learners</h2>
+{% endif %}
 <table class="table">
     <tr>
         <th>Name</th><th>Age</th><th>Gender</th><th>Grade</th><th>Emergency Contact</th>
@@ -21,14 +25,14 @@
                     <br>
                     Status: {{ booking.status }}
                     
-                    <!-- Attend button (only if not attended yet) -->
                     {% if booking.status != 'attended' %}
+                    {% if booking.status != 'cancelled' %}
                         <a href="{{ url_for('attend_lesson', booking_id=booking.id) }}" class="btn btn-success btn-sm">
                             Attend
                         </a>
                     {% endif %}
+                    {% endif %}
 
-                    <!-- Review button (only if already attended, and no review yet) -->
                     {% if booking.status == 'attended' and not booking.review %}
                         <a href="{{ url_for('review', booking_id=booking.id) }}" class="btn btn-primary btn-sm">
                             Review

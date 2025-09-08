@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Reviews</h2>
+
+{% if bookings %}
+<table class="table table-striped">
+    <tr>
+        {% if current_user.role == 'admin' %}
+            <th>Learner</th>
+        {% endif %}
+        <th>Lesson</th>
+        <th>Status</th>
+        <th>Review</th>
+        <th>Rating</th>
+    </tr>
+    {% for booking in bookings %}
+    <tr>
+        {% if current_user.role == 'admin' %}
+            <td>{{ booking.learner.name }}</td>
+        {% endif %}
+        <td>{{ booking.lesson.day }} {{ booking.lesson.time }} (Grade {{ booking.lesson.grade }})</td>
+        <td>{{ booking.status }}</td>
+        <td>{{ booking.review }}</td>
+        <td>{{ booking.rating }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No reviews yet.</p>
+{% endif %}
+
+{% endblock %}
