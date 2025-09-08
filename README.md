@@ -66,6 +66,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 python populate_data.py
 flask run
+```
 ## Usage
 
 - Register a new learner or log in as an existing learner/admin.
@@ -73,11 +74,12 @@ flask run
 - Attend lessons to update grade automatically.
 - Submit reviews after attending lessons.
 - Admins can generate learner and coach reports from the navigation bar.
-```
+
 ### Default Accounts for Testing
 
 | Role  | Email           | Password   |
 |-------|-----------------|-----------|
 | Emma | emma@example.com  | password123  |
 | Admin | admin@hjss.com  | admin123  |
+
 
