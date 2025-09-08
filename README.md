@@ -75,11 +75,7 @@ flask run
 - Submit reviews after attending lessons.
 - Admins can generate learner and coach reports from the navigation bar.
 
-### Default Accounts for Testing
 
-| Role  | Email           | Password   |
-|-------|-----------------|-----------|
-| Emma | emma@example.com  | password123  |
-| Admin | admin@hjss.com  | admin123  |
+
 
 
