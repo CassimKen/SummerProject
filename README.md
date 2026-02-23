@@ -55,7 +55,7 @@ The application is built using Flask, SQLAlchemy, and Bootstrap, with data store
 
 ## Installation
 ```bash
-git clone https://github.com/yourusername/hjss-management.git
+git clone https://github.com/cassimken/hjss-management.git
 cd hjss-management
 python -m venv venv
 # Activate virtual environment
@@ -74,6 +74,7 @@ flask run
 - Attend lessons to update grade automatically.
 - Submit reviews after attending lessons.
 - Admins can generate learner and coach reports from the navigation bar.
+
 
 
 
